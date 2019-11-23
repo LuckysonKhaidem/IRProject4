@@ -2,15 +2,17 @@
 from flask import Flask, render_template,jsonify,request
 import requests
 import config
+from modules import IRConnector
 
 app = Flask(__name__)
 
+ir_connector = IRConnector.IRConnector(config.IR_HOST,config.IR_PORT,config.TWEETS_CORE)
 
 @app.route("/api/fetch", methods = ["POST"])
 def fetch_documents():
     query = request.form["q"]
-    print("THE QUERY IS {}".format(query))
-    return jsonify(result = "IT WORKS")
+    response = ir_connector.fetch_documents(query)
+    return jsonify(result = response)
 
 @app.route("/",methods = ["GET"])
 def index():
