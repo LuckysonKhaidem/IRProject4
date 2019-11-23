@@ -4,7 +4,6 @@ $(document).ready(function(){
     const populateQueryResults = function(data) {
         results = data["result"]["response"]["docs"]
         $('#tweet_results').empty()
-        console.log(results)
         var html = ""
         for(var i = 0; i < results.length;i++) {
             var tweet_date = results[i]["tweet_date"].split("T")[0]
@@ -22,10 +21,8 @@ $(document).ready(function(){
             <span class="plus"><a href="#" title="Lorem ipsum"><i class="glyphicon glyphicon-plus"></i></a></span>
         </div>
         <span class="clearfix borda"></span>`
-        console.log(item)
         html += item
         }
-        console.log("THE HTML IS "+html)
         $('#tweet_results').append(html)
         
     }
