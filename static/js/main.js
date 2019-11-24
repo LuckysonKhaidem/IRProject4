@@ -1,9 +1,9 @@
 $(document).ready(function(){
-
-    
     const populateQueryResults = function(data) {
         results = data["result"]["response"]["docs"]
         $('#tweet_results').empty()
+        $('#sentiment-plot').empty()
+        $('#top-ten').empty()
         var html = ""
         for(var i = 0; i < results.length;i++) {
             var tweet_date = results[i]["tweet_date"].split("T")[0]
@@ -23,8 +23,10 @@ $(document).ready(function(){
         <span class="clearfix borda"></span>`
         html += item
         }
-        $('#tweet_results').append(html)
-        
+        $('#tweet_results').append(html) 
+        $('#sentiment-plot').append(data["sentiment_plot"])
+        $('#top-ten').append(data["top10_plot"])
+  
     }
 
     $("#submit_btn").click(function(){
@@ -34,6 +36,7 @@ $(document).ready(function(){
             data: {q:$("#query").val()},
             dataType: 'json',
             success: function(data) {
+                console.log(data)
                 populateQueryResults(data)
             }
           });
