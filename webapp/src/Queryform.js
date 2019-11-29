@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import data from './data'
 import { withRouter } from 'react-router-dom';
 const axios = require("axios")
 
@@ -7,7 +6,11 @@ class Queryform extends Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
+      
+
     }
+
+
     handleClick(e) {
         e.preventDefault()
         var queryInput = document.getElementById("q");
@@ -15,9 +18,25 @@ class Queryform extends Component {
         if(queryText === "" || queryText === undefined) {
             alert("Query is empty")
             return false;
-        }  
-      this.props.changeState(data)
-      this.props.history.push("/results")
+        }
+        var formData = new FormData()
+        formData.set("q", queryText)
+        axios({
+            method : "post",
+            url : "/api/fetch",
+            data: formData
+        }).then(function(response) {
+            console.log("THis is the response")
+            console.log(Object.keys(response))
+            console.log(response.data)
+            this.props.changeState(response.data);
+            this.props.history.push("/results");
+        }.bind(this)).catch(function(error){
+            console.log(error)
+            alert("There was an error while trying to reach the server");
+            return false;
+        })
+
     }
     render() {
         return (

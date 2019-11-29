@@ -42,14 +42,16 @@ class TopicModeller:
             'X-ClientTraceId': str(uuid.uuid4())
         }
         for i in tweets:
-          if(i['text_hi']!=None):
+          if("text_hi" in i and i['text_hi']!=None):
             body=[{"text":i['text_hi']}]
             request = requests.post(constructed_url, headers=headers, json=body)
             response = request.json()
             i['text_en']=response[0]['translations'][0]['text']
-          if(i['text_pt']!=None):
-            translated=get(i['text_pt'])
-            i['text_en']=translated.text
+          if("text_pt" in i and i['text_pt']!=None):
+            body=[{"text":i['text_pt']}]
+            request = requests.post(constructed_url, headers=headers, json=body)
+            response = request.json()
+            i['text_en']=response[0]['translations'][0]['text']
         return tweets
     
     def tokenize_tweets(self,tweets):

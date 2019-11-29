@@ -7,6 +7,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import Home from './Home'
 import TweetResults from './TweetResults'
 import Sentiment from './Sentiment'
+import TopicAnalysis from './TopicAnalysis'
 import 'react-table-filter/lib/styles.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,7 +20,8 @@ class App extends Component  {
     console.log(data)
     this.setState({
       tweets : data["result"]["response"]["docs"],
-      sentiment_plot: data["sentiment_plot"]
+      sentiment_plot: data["sentiment_plot"],
+      lda_graph : data["lda_graph"]
     })
   }
 
@@ -31,6 +33,7 @@ class App extends Component  {
       <Route exact path = "/"  component = {() => <Home {...this.props} data = {this.state} changeState = {this.changeState}/>}/>
       <Route path = "/results" component = {() => <TweetResults {...this.props} data = {this.state}/>}  />
       <Route path = "/sentiments" component = {() => <Sentiment {...this.props} data = {this.state}/>}  />
+      <Route path = "/topics" component = {() => <TopicAnalysis {...this.props} data = {this.state}/>} />
     </div>
     </BrowserRouter>
   )
