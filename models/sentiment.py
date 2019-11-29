@@ -24,6 +24,9 @@ nltk.download('stopwords')
 from nltk.probability import FreqDist
 import mpld3
 from mpld3 import plugins
+import gensim
+import uuid
+import requests
 
 
 
@@ -44,14 +47,24 @@ class SentimentAnalyzer:
       return tweets
   
     def translate_data(self,tweets):
-        translator = Translator()
+        subscription_key = "02b7040aea8449f78447645b79c4c88b"
+        endpoint = "https://api.cognitive.microsofttranslator.com/"
+        path = '/translate?api-version=3.0'
+        params = '&to=en'
+        constructed_url = endpoint + path + params
+        headers = {
+            'Ocp-Apim-Subscription-Key': subscription_key,
+            'Content-type': 'application/json',
+            'X-ClientTraceId': str(uuid.uuid4())
+        }
         for i in tweets:
-          if('text_hi' in i and i["text_hi"] != None):
-            translated=translator.translate(i['text_hi'])
-            i['text_en']=translated.text
-          elif('text_pt' in i and i["text_pt"] != None):
-            print(i["text_pt"])
-            translated=translator.translate(i['text_pt'])
+          if("text_hi" in i  and i['text_hi']!=None):
+            body=[{"text":i['text_hi']}]
+            request = requests.post(constructed_url, headers=headers, json=body)
+            response = request.json()
+            i['text_en']=response[0]['translations'][0]['text']
+          if("text_pt" in i and i['text_pt']!=None):
+            translated=get(i['text_pt'])
             i['text_en']=translated.text
         return tweets
     
@@ -70,8 +83,10 @@ class SentimentAnalyzer:
           for wrd in wrd_list:
             word_list.append(wrd)
         fdist = FreqDist(word_list)
-        fd = pd.DataFrame(fdist.most_common(10),columns = ["Word","Frequency"]).drop([0]).reindex()        
-        return fd
+        """fd = pd.DataFrame(fdist.most_common(10),columns = ["Word","Frequency"]).drop([0]).reindex()
+        fd_json=fd.to_dict()
+        #print(fd_json)"""
+        return fdist.most_common(10)
 
     def generate_top10_word_plot(self,topwrds):
         fig, ax = plt.subplots()
@@ -82,12 +97,14 @@ class SentimentAnalyzer:
         tooltip = plugins.PointHTMLTooltip(freq_plot[0],voffset=10, hoffset=10)
         plugins.connect(fig, tooltip)
         return fig
-        
+    
+    #generate json of sentiment
     def generate_sentiment_plot(self,data_with_sentiment):
         senti=[i['sentiment'] for i in data_with_sentiment]
         senti_df=pd.DataFrame(senti,columns=["Sentiment"])
         senti_counts=senti_df["Sentiment"].value_counts()
-        fig, ax = plt.subplots()
+        senti_counts_json=senti_counts.to_dict()
+        """fig, ax = plt.subplots()
         senti_plot=ax.bar(senti_counts.index, senti_counts.values)
         ax.set_xlabel('Sentiment',size=12)
         #ax.set_ylabel('%age of Tweet Replies',size=12)
@@ -96,33 +113,33 @@ class SentimentAnalyzer:
         
         tooltip = plugins.PointHTMLTooltip(senti_plot[0],voffset=10, hoffset=10)
         plugins.connect(fig, tooltip)
-        return fig
+        return fig"""
+        return senti_counts_json
     
+    #call this method to get sentiment count in json format
     def get_sentiment_plot(self):
         translated_tweets=self.translate_data(self.data)
         tweets_with_sentments=self.analyse_sentiment(translated_tweets)
-        senti_graph=self.generate_sentiment_plot(tweets_with_sentments)
+        senti_json=self.generate_sentiment_plot(tweets_with_sentments)
         #mygraph="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/graph.html"
-        senti_graph_html=mpld3.fig_to_html(senti_graph)
         #senti_graph_html=mpld3.save_html(senti_graph,mygraph)
-        return senti_graph_html
+        return senti_json
     
+    #call this method to get top 10 words tuple list
     def get_top10_word_plot(self):
          translated_tweets=self.translate_data(self.data)
          tweets_with_sentments=self.analyse_sentiment(translated_tweets)
          tokenized_tweets=self.tokenize_tweets(tweets_with_sentments)
          without_stop_words=self.remove_stopwords(tokenized_tweets)
          wrd_list=self.get_top10_words(without_stop_words)
-         top10_wrds_graph=self.generate_top10_word_plot(wrd_list)
-         #mygraph="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/graph.html"
-         #top10_fig_html=mpld3.save_html(fig,mygraph)
-         top10_fig_html=mpld3.fig_to_html(top10_wrds_graph)
-         return top10_fig_html
+         #top10_wrds_graph=self.generate_top10_word_plot(wrd_list)
+         #top10_fig_html=mpld3.fig_to_html(top10_wrds_graph)
+         return wrd_list
 
 """data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/"
 my_docs = open(data_path+'cooked_india_18.json')
 data = json.load(my_docs)
 senti=SentimentAnalyzer(data)
-senti_plt=senti.get_sentiment_plot()
+senti_plt=senti.get_sentiment_plot() #use this method
 freq_plt=senti.get_top10_word_plot()"""
 

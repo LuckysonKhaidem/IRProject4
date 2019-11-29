@@ -56,11 +56,23 @@ class TopicModeller:
     
     def tokenize_tweets(self,tweets):
         tokenizer = RegexpTokenizer(r'\w+')
-        tokenized_list_en = [tokenizer.tokenize(doc['text_en']) for doc in tweets]
+        """for doc in tweets:
+            doc['text_en']=doc['text_en'].lower()"""
+        tokenized_list_en = [tokenizer.tokenize(doc['text_en'].lower()) for doc in tweets]
         return tokenized_list_en
+    
+    def remove_small_penis(self,tweets):
+        return [[word for word in doc if len(word)>3] for doc in tweets]
+    
+    def remove_short_guys(self,tweets):
+        return [doc for doc in tweets if len(doc)>20]
+    
+    def remove_digit(self,tweets):
+        return [[word for word in doc if not word.isnumeric()] for doc in tweets]
     
     def remove_stopwords(self,tweets):
         stop_words_en = stopwords.words('english')
+        stop_words_en.extend(['RT','rt','@','would','could','should','said','must'])
         return [[word for word in doc if word not in stop_words_en] for doc in tweets]
     
     def lemmatizer(self,tweets):
@@ -74,16 +86,9 @@ class TopicModeller:
                                  id2word=dct,
                                  random_state=100,
                                  num_topics=4,
+                                 chunksize=100,
                                  passes=10,
-                                 chunksize=1000,
-                                 batch=False,
                                  alpha='asymmetric',
-                                 decay=0.5,
-                                 offset=64,
-                                 eta=None,
-                                 eval_every=0,
-                                 iterations=100,
-                                 gamma_threshold=0.001,
                                  per_word_topics=True)
         return lda_model,dct,corpus
     
@@ -91,20 +96,28 @@ class TopicModeller:
         vis = pyLDAvis.gensim.prepare(lda_model, corpus, dct)
         lda_html=pyLDAvis.prepared_data_to_html(vis)
         #data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/lda.html"
-        lda_html=pyLDAvis.prepared_data_to_html(vis)
+        #lda_html=pyLDAvis.save_html(vis,data_path)
         return lda_html
     
     def lda_graph(self):
         translated_tweets=self.translate_data(self.data)
         tokenised_tweets=self.tokenize_tweets(translated_tweets)
+        tokenised_tweets=self.remove_short_guys(tokenised_tweets)
         tweets_cleaned=self.remove_stopwords(tokenised_tweets)
+        tweets_cleaned=self.remove_small_penis(tweets_cleaned)
+        tweets_cleaned=self.remove_digit(tweets_cleaned)
         tweets_lemmatised=self.lemmatizer(tweets_cleaned)
         lda_tweets,dct,corpus=self.do_lda(tweets_lemmatised)
         lda_graph=self.visualise_lda(lda_tweets,corpus,dct)
         return lda_graph
     
-"""data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/"
-my_docs = open(data_path+'cooked_india_18.json')
-data = json.load(my_docs)
+"""data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/test_lda/"
+data=[]
+for filename in os.listdir(data_path):
+    with open(data_path + filename,'r') as f:
+        #print(filename)
+        tmp=json.load(f)
+        data.extend(tmp)
+#print(data)
 senti=TopicModeller(data)
 senti_plt=senti.lda_graph()"""
