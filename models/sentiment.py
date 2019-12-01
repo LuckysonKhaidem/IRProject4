@@ -141,6 +141,7 @@ class SentimentAnalyzer:
          tokenized_tweets=self.tokenize_tweets(tweets_with_sentments)
          without_stop_words=self.remove_stopwords(tokenized_tweets)
          wrd_list=self.get_top10_words(without_stop_words)
+         print(wrd_list)
          #top10_wrds_graph=self.generate_top10_word_plot(wrd_list)
          #top10_fig_html=mpld3.fig_to_html(top10_wrds_graph)
          return wrd_list

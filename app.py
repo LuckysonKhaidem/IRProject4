@@ -10,12 +10,14 @@ from collections import defaultdict
 from models.tweet_vol import VolumeCalc
 import warnings
 from collections import defaultdict
+import nltk
+from nltk.corpus import stopwords
 
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
+
 app = Flask(__name__)
 CORS(app)
 ir_connector = IRConnector.IRConnector(config.IR_HOST,config.IR_PORT,config.TWEETS_CORE,config.NEWS_CORE)
-
+stop_words = stopwords.words('english')
 
 def perform_topic_analysis_by_country(tweets):
     tweets_by_country = defaultdict(list)
@@ -35,23 +37,41 @@ def remove_duplicate_news(news):
     fresh_news = []
     scanned = defaultdict(bool)
     for new in news:
-        if scanned[new["title"]] == False:
-            fresh_news.append(new)
-            scanned[new["title"]] = True
+        try:
+            if scanned[new["title"]] == False:
+                fresh_news.append(new)
+                scanned[new["title"]] = True
+        except Exception as e:
+            print(e)
     return fresh_news
 
+def remove_stop_words(query):
+    global stop_words
+    query_tokens = query.split()
+    query_tokens = list(filter(lambda x: x.lower() not in stop_words, query_tokens))
+    print(query_tokens)
+    return " ".join(query_tokens)
+
+def filter_on_news(query, news):
+    filtered_news = []
+    for article in news:
+        if "title" in article and query.lower() in article["title"].lower():
+            filtered_news.append(article)
+        elif "text" in article and query.lower() in article["text"].lower():
+            filtered_news.append(article)
+        elif "summary" in article and query.lower() in article["summary"].lower():
+            filtered_news.append(article)
+    return filtered_news
 
 @app.route("/api/fetch", methods = ["POST"])
 def fetch_documents():
     query = request.form["q"]
     response = ir_connector.fetch_documents(query)
 
-    news_response = ir_connector.fetch_news(query)
-
-    news_response["response"]["docs"] = list(filter(lambda x : query.lower() in x["text"].lower() or query.lower() in x["title"].lower(), news_response["response"]["docs"]))
+    news_response = ir_connector.fetch_news(remove_stop_words(query))
 
     news_response["response"]["docs"]  = remove_duplicate_news(news_response["response"]["docs"])
-    
+
     tweets = list(filter(lambda x: "text_en" in x, response["response"]["docs"]))
 
     #Perform topic modelling on poi_tweets

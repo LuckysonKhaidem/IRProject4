@@ -25,6 +25,7 @@ from gensim.models import LdaModel, LdaMulticore
 import matplotlib.pyplot as plt
 import pyLDAvis
 import pyLDAvis.gensim
+import re
 
 class TopicModeller:
     def __init__(self,data):
