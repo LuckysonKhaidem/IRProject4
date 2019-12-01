@@ -73,11 +73,12 @@ class SentimentAnalyzer:
     
     def remove_stopwords(self,tweets):
         stop_words_en = stopwords.words('english')
+        stop_words_en.extend(['RT','rt','@','would','could','should','said','must'])
         return [[word for word in doc if word not in stop_words_en] for doc in tweets]
     
     def tokenize_tweets(self,tweets):
         tokenizer = RegexpTokenizer(r'\w+')
-        tokenized_list_en = [tokenizer.tokenize(doc['text_en']) for doc in tweets]
+        tokenized_list_en = [tokenizer.tokenize(doc['text_en'].lower()) for doc in tweets]
         return tokenized_list_en
     
     def get_top10_words(self,tweets):
@@ -105,7 +106,9 @@ class SentimentAnalyzer:
     def generate_sentiment_plot(self,data_with_sentiment):
         senti=[i['sentiment'] for i in data_with_sentiment]
         senti_df=pd.DataFrame(senti,columns=["Sentiment"])
-        senti_counts=senti_df["Sentiment"].value_counts()
+        sums=senti_df['Sentiment'].count()
+        senti_counts=senti_df["Sentiment"].value_counts()/sums
+        #print(senti_counts)
         senti_counts_json=senti_counts.to_dict()
         """fig, ax = plt.subplots()
         senti_plot=ax.bar(senti_counts.index, senti_counts.values)
@@ -139,10 +142,10 @@ class SentimentAnalyzer:
          #top10_fig_html=mpld3.fig_to_html(top10_wrds_graph)
          return wrd_list
 
-"""data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/"
-my_docs = open(data_path+'cooked_india_18.json')
+data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/cooked/"
+my_docs = open(data_path+'cooked_usa_18.json')
 data = json.load(my_docs)
 senti=SentimentAnalyzer(data)
 senti_plt=senti.get_sentiment_plot() #use this method
-freq_plt=senti.get_top10_word_plot()"""
+freq_plt=senti.get_top10_word_plot()
 
