@@ -27,6 +27,9 @@ class TopicAnalysis extends Component {
         scriptTag.async = true;
         scriptTag.innerHTML = scripElement.content
         element.appendChild(scriptTag)
+
+        var ldaElement = document.getElementById(divElement.attributes.id)
+        console.log(ldaElement)
     }
     getOptions() {
         var options = []
@@ -45,17 +48,21 @@ class TopicAnalysis extends Component {
         }
     }
     handleChange(e) {
+        this.setState({selectedOption: e.value})
         this.renderLDAGraph(this.props.data.lda_graphs[e.value])
     }
+
+    getDefaultSelectValue() {
+        var options = this.getOptions()
+        console.log(options)
+        // this.setState({selectedOption : options[0].value})
+    }
     render() {
-        console.log(this.props.data)
         if(this.props.data.tweets.length > 0) {
+            this.getDefaultSelectValue()
             const { selectedOption } = this.state;
             return (<div className = "topic-analysis-parent">
-                         {/* <input type="select" onChange={this.onDropdownSelected} label="Multiple Select" multiple>
-                                {this.createDropdown()}
-                            </input> */}
-                    <Select value = {selectedOption} options = {this.getOptions()} onChange = {this.handleChange}/>
+                    <Select placeholder = "Select Country" options = {this.getOptions()} onChange = {this.handleChange}/>
                     <div className = "topic-analysis"> </div>
 
             </div>)

@@ -15,7 +15,8 @@ class VolumeCalc:
     
     def poi_vol(self):
         poi_vols={}
-        for doc in self.data:
+        tweets = list(filter(lambda x: "reply_text" not in x, self.data))
+        for doc in tweets:
             name=doc['poi_name']
             tmp=poi_vols.get(name,0)
             tmp+=1
@@ -24,7 +25,8 @@ class VolumeCalc:
         
     def reply_vol(self):
         reply_vols={}
-        for doc in self.data:
+        tweets = list(filter(lambda x: "reply_text" in x, self.data))
+        for doc in tweets:
             name=doc['poi_name']
             tmp=reply_vols.get(name,0)
             tmp+=1

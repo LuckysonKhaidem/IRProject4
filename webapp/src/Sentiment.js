@@ -22,6 +22,21 @@ class Sentiment extends Component {
 
         return dataPoints;
     }
+
+    getPoiVolumeDataPoints() {
+        var dataPoints = []
+        for(var poi in this.props.data.poi_volume) {
+            dataPoints.push({label : poi, y: this.props.data.poi_volume[poi]})
+        }
+        return dataPoints
+    }
+    getReplyVolumeOptions() {
+        var dataPoints = []
+        for(var poi in this.props.data.reply_volume) {
+            dataPoints.push({label : poi, y: this.props.data.reply_volume[poi]})
+        }
+        return dataPoints
+    }
     render() {
         var output = undefined
         if(this.props.data.sentiment_plot != undefined) {
@@ -52,16 +67,42 @@ class Sentiment extends Component {
                     }
                 ]
             }
-            
+
+            const poiVolumeOptions = {
+                title : {
+                    text : "Volume of Tweets by POIs"
+                },
+                data : [
+                    {
+                        type : "column",
+                        dataPoints : this.getPoiVolumeDataPoints()
+                    }
+                ]
+            }
+
+            const replyVolumeOptions = {
+                title : {
+                    text : "Volume of Tweets Replied To POIs"
+                },
+                data : [
+                    {
+                        type : "column",
+                        dataPoints : this.getReplyVolumeOptions()
+                    }
+                ]
+            }
+
+
             output = [<CanvasJSChart options = {sentimentOptions}/>,
-            <CanvasJSChart options = {topWordOptions}/> ]
+            <CanvasJSChart options = {topWordOptions}/>, <CanvasJSChart options = {poiVolumeOptions}/>,
+        <CanvasJSChart options = {replyVolumeOptions}/>]
         }
         else {
             output = (<h3>Nothing to display</h3>)
         }
         return (
             <div className = "sentiment-analysis">
-                <div className = "container" style = {{marginTop:5 + "%"}}>
+                <div className = "container" style = {{marginTop:5 + "%", width: 70 + "%"}}>
                     {output}
                 </div>
              </div>

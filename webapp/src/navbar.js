@@ -9,8 +9,9 @@ class Navbar extends Component {
                     <ul className = "left">
                         <li><Link to = "/">Home</Link></li>
                         <li><NavLink to = "/results">Tweet Results</NavLink></li>
-                        <li><NavLink to= "/sentiments">Sentiment Analysis</NavLink></li>
+                        <li><NavLink to= "/statistics">Statistics</NavLink></li>
                         <li><NavLink to= "/topics">Topic Analysis</NavLink> </li>
+                        <li><NavLink to= "/news">Relevant News</NavLink> </li>
                     </ul>
                 </div>
             </nav>

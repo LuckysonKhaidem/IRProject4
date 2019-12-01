@@ -7,10 +7,14 @@ from models.sentiment import SentimentAnalyzer
 from flask_cors import CORS
 from topicmodelling import TopicModeller
 from collections import defaultdict
+from models.tweet_vol import VolumeCalc
+import warnings
+from collections import defaultdict
 
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 app = Flask(__name__)
 CORS(app)
-ir_connector = IRConnector.IRConnector(config.IR_HOST,config.IR_PORT,config.TWEETS_CORE)
+ir_connector = IRConnector.IRConnector(config.IR_HOST,config.IR_PORT,config.TWEETS_CORE,config.NEWS_CORE)
 
 
 def perform_topic_analysis_by_country(tweets):
@@ -27,13 +31,27 @@ def perform_topic_analysis_by_country(tweets):
 
     return lda_graphs
 
+def remove_duplicate_news(news):
+    fresh_news = []
+    scanned = defaultdict(bool)
+    for new in news:
+        if scanned[new["title"]] == False:
+            fresh_news.append(new)
+            scanned[new["title"]] = True
+    return fresh_news
+
 
 @app.route("/api/fetch", methods = ["POST"])
 def fetch_documents():
-
     query = request.form["q"]
     response = ir_connector.fetch_documents(query)
 
+    news_response = ir_connector.fetch_news(query)
+
+    news_response["response"]["docs"] = list(filter(lambda x : query.lower() in x["text"].lower() or query.lower() in x["title"].lower(), news_response["response"]["docs"]))
+
+    news_response["response"]["docs"]  = remove_duplicate_news(news_response["response"]["docs"])
+    
     tweets = list(filter(lambda x: "text_en" in x, response["response"]["docs"]))
 
     #Perform topic modelling on poi_tweets
@@ -46,7 +64,20 @@ def fetch_documents():
     sentiment_plot = sentiment_analyzer.get_sentiment_plot()
     top10_plot = sentiment_analyzer.get_top10_word_plot()
 
-    return jsonify(result = response, sentiment_plot = sentiment_plot, top10_plot = top10_plot, lda_graphs = lda_graphs)
+    #Calculate volume
+    volume_calculator = VolumeCalc(response["response"]["docs"])
+    poi_volume = volume_calculator.poi_vol()
+    reply_volume = volume_calculator.reply_vol()
+
+    return jsonify(
+                   result = response, 
+                   sentiment_plot = sentiment_plot, 
+                   top10_plot = top10_plot, 
+                   lda_graphs = lda_graphs, 
+                   poi_volume = poi_volume, 
+                   reply_volume = reply_volume,
+                   news_result = news_response
+                   )
 
 @app.route("/",methods = ["GET"])
 def index():
