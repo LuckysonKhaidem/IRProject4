@@ -2,3 +2,5 @@
 *.json
 *.pem
 __pycache__
+.DS_Store
+*.ipynb
