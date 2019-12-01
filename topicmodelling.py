@@ -55,6 +55,8 @@ class TopicModeller:
         return tweets
     
     def tokenize_tweets(self,tweets):
+        for doc in tweets:
+            doc["text_en"] = re.sub(r"http\S+", "", doc["text_en"])
         tokenizer = RegexpTokenizer(r'\w+')
         """for doc in tweets:
             doc['text_en']=doc['text_en'].lower()"""
