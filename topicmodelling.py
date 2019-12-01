@@ -107,9 +107,12 @@ class TopicModeller:
         tweets_cleaned=self.remove_small_penis(tweets_cleaned)
         tweets_cleaned=self.remove_digit(tweets_cleaned)
         tweets_lemmatised=self.lemmatizer(tweets_cleaned)
-        lda_tweets,dct,corpus=self.do_lda(tweets_lemmatised)
-        lda_graph=self.visualise_lda(lda_tweets,corpus,dct)
-        return lda_graph
+        try:
+            lda_tweets,dct,corpus=self.do_lda(tweets_lemmatised)
+            lda_graph=self.visualise_lda(lda_tweets,corpus,dct)
+            return lda_graph
+        except:
+            return None
     
 """data_path="/Users/ankitanand/Box/UB/Fall 2019/IR/Proj1/test_lda/"
 data=[]

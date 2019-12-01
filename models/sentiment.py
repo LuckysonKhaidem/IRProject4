@@ -64,8 +64,11 @@ class SentimentAnalyzer:
             response = request.json()
             i['text_en']=response[0]['translations'][0]['text']
           if("text_pt" in i and i['text_pt']!=None):
-            translated=get(i['text_pt'])
-            i['text_en']=translated.text
+            body=[{"text":i['text_pt']}]
+            request = requests.post(constructed_url, headers=headers, json=body)
+            response = request.json()
+            print(response)
+            i['text_en']=response[0]['translations'][0]['text']
         return tweets
     
     def remove_stopwords(self,tweets):

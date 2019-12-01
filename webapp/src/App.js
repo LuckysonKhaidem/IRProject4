@@ -21,7 +21,8 @@ class App extends Component  {
     this.setState({
       tweets : data["result"]["response"]["docs"],
       sentiment_plot: data["sentiment_plot"],
-      lda_graph : data["lda_graph"]
+      lda_graphs : data["lda_graphs"],
+      top_word_graph : data["top10_plot"]
     })
   }
 
