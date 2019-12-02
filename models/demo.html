@@ -1,0 +1,113 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 750px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "black", "font": {"color": "blue"}, "id": "HillaryClinton", "label": "HillaryClinton", "shape": "dot", "title": "src"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Congress", "label": "Congress", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Hillary Clinton", "label": "Hillary Clinton", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Trump", "label": "Trump", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Florida", "label": "Florida", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "House", "label": "House", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Georgia", "label": "Georgia", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Senate", "label": "Senate", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Bill", "label": "Bill", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Russia", "label": "Russia", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Ohio", "label": "Ohio", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Puerto Rico", "label": "Puerto Rico", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "U.S.", "label": "U.S.", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Arizona", "label": "Arizona", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "the United States", "label": "the United States", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Iran", "label": "Iran", "shape": "dot", "title": "dst"}, {"color": "black", "font": {"color": "blue"}, "id": "BarackObama", "label": "BarackObama", "shape": "dot", "title": "src"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Supreme Court", "label": "Supreme Court", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Chicago", "label": "Chicago", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "the Supreme Court", "label": "the Supreme Court", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Michelle", "label": "Michelle", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Merrick Garland", "label": "Merrick Garland", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Alaska", "label": "Alaska", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Obama", "label": "Obama", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "The Supreme Court", "label": "The Supreme Court", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Obamacare", "label": "Obamacare", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "the Truth Team", "label": "the Truth Team", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "our Supreme Court", "label": "our Supreme Court", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "James Taylor", "label": "James Taylor", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Africa", "label": "Africa", "shape": "dot", "title": "dst"}, {"color": "black", "font": {"color": "blue"}, "id": "BernieSanders", "label": "BernieSanders", "shape": "dot", "title": "src"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Bernie", "label": "Bernie", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Iowa", "label": "Iowa", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Bernie Sanders", "label": "Bernie Sanders", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "South Carolina", "label": "South Carolina", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Canada", "label": "Canada", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "NRA", "label": "NRA", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Walmart", "label": "Walmart", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Amazon", "label": "Amazon", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "New Hampshire", "label": "New Hampshire", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Earth", "label": "Earth", "shape": "dot", "title": "dst"}, {"color": "black", "font": {"color": "blue"}, "id": "realDonaldTrump", "label": "realDonaldTrump", "shape": "dot", "title": "src"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Mexico", "label": "Mexico", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "America", "label": "America", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "USA", "label": "USA", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Israel", "label": "Israel", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "FBI", "label": "FBI", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Japan", "label": "Japan", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Fed", "label": "Fed", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Fake News", "label": "Fake News", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Mueller", "label": "Mueller", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "the Mueller Report", "label": "the Mueller Report", "shape": "dot", "title": "dst"}, {"color": "black", "font": {"color": "blue"}, "id": "ewarren", "label": "ewarren", "shape": "dot", "title": "src"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Warren", "label": "Warren", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Washington", "label": "Washington", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Bruce", "label": "Bruce", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Elizabeth Warren", "label": "Elizabeth Warren", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Bailey", "label": "Bailey", "shape": "dot", "title": "dst"}, {"color": "#dd4b39", "font": {"color": "blue"}, "id": "Mitch McConnell", "label": "Mitch McConnell", "shape": "dot", "title": "dst"}]);
+        edges = new vis.DataSet([{"from": "HillaryClinton", "to": "Congress"}, {"from": "HillaryClinton", "to": "Hillary Clinton"}, {"from": "HillaryClinton", "to": "Trump"}, {"from": "HillaryClinton", "to": "Florida"}, {"from": "HillaryClinton", "to": "House"}, {"from": "HillaryClinton", "to": "Georgia"}, {"from": "HillaryClinton", "to": "Senate"}, {"from": "HillaryClinton", "to": "Bill"}, {"from": "HillaryClinton", "to": "Russia"}, {"from": "HillaryClinton", "to": "Ohio"}, {"from": "HillaryClinton", "to": "Puerto Rico"}, {"from": "HillaryClinton", "to": "U.S."}, {"from": "HillaryClinton", "to": "Arizona"}, {"from": "HillaryClinton", "to": "the United States"}, {"from": "HillaryClinton", "to": "Iran"}, {"from": "BarackObama", "to": "Congress"}, {"from": "BarackObama", "to": "Supreme Court"}, {"from": "BarackObama", "to": "Chicago"}, {"from": "BarackObama", "to": "the Supreme Court"}, {"from": "BarackObama", "to": "U.S."}, {"from": "BarackObama", "to": "Michelle"}, {"from": "BarackObama", "to": "Merrick Garland"}, {"from": "BarackObama", "to": "Iran"}, {"from": "BarackObama", "to": "Alaska"}, {"from": "BarackObama", "to": "Obama"}, {"from": "BarackObama", "to": "The Supreme Court"}, {"from": "BarackObama", "to": "Obamacare"}, {"from": "BarackObama", "to": "the Truth Team"}, {"from": "BarackObama", "to": "our Supreme Court"}, {"from": "BarackObama", "to": "James Taylor"}, {"from": "BarackObama", "to": "Africa"}, {"from": "BernieSanders", "to": "Bernie"}, {"from": "BernieSanders", "to": "Trump"}, {"from": "BernieSanders", "to": "Iowa"}, {"from": "BernieSanders", "to": "Bernie Sanders"}, {"from": "BernieSanders", "to": "Congress"}, {"from": "BernieSanders", "to": "the United States"}, {"from": "BernieSanders", "to": "South Carolina"}, {"from": "BernieSanders", "to": "U.S."}, {"from": "BernieSanders", "to": "Canada"}, {"from": "BernieSanders", "to": "NRA"}, {"from": "BernieSanders", "to": "Walmart"}, {"from": "BernieSanders", "to": "Iran"}, {"from": "BernieSanders", "to": "Amazon"}, {"from": "BernieSanders", "to": "New Hampshire"}, {"from": "BernieSanders", "to": "Earth"}, {"from": "realDonaldTrump", "to": "Mexico"}, {"from": "realDonaldTrump", "to": "America"}, {"from": "realDonaldTrump", "to": "Congress"}, {"from": "realDonaldTrump", "to": "USA"}, {"from": "realDonaldTrump", "to": "Iran"}, {"from": "realDonaldTrump", "to": "Israel"}, {"from": "realDonaldTrump", "to": "FBI"}, {"from": "realDonaldTrump", "to": "Japan"}, {"from": "realDonaldTrump", "to": "Fed"}, {"from": "realDonaldTrump", "to": "Fake News"}, {"from": "realDonaldTrump", "to": "Russia"}, {"from": "realDonaldTrump", "to": "Mueller"}, {"from": "realDonaldTrump", "to": "House"}, {"from": "realDonaldTrump", "to": "Senate"}, {"from": "realDonaldTrump", "to": "the Mueller Report"}, {"from": "realDonaldTrump", "to": "Florida"}, {"from": "ewarren", "to": "Warren"}, {"from": "ewarren", "to": "Washington"}, {"from": "ewarren", "to": "Iowa"}, {"from": "ewarren", "to": "Mueller"}, {"from": "ewarren", "to": "Senate"}, {"from": "ewarren", "to": "Amazon"}, {"from": "ewarren", "to": "the United States"}, {"from": "ewarren", "to": "Puerto Rico"}, {"from": "ewarren", "to": "U.S."}, {"from": "ewarren", "to": "Bruce"}, {"from": "ewarren", "to": "New Hampshire"}, {"from": "ewarren", "to": "Trump"}, {"from": "ewarren", "to": "Elizabeth Warren"}, {"from": "ewarren", "to": "Bailey"}, {"from": "ewarren", "to": "House"}, {"from": "ewarren", "to": "Mitch McConnell"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

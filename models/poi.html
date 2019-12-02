@@ -1,0 +1,113 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 750px;
+            background-color: #222222;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "#ffffff", "font": {"color": "white"}, "id": "HillaryClinton", "label": "HillaryClinton", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Hillary", "label": "Hillary", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "America", "label": "America", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Trump", "label": "Trump", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Donald Trump", "label": "Donald Trump", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Congress", "label": "Congress", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Hillary Clinton", "label": "Hillary Clinton", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Florida", "label": "Florida", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "House", "label": "House", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Georgia", "label": "Georgia", "shape": "dot"}, {"color": "#ffffff", "font": {"color": "white"}, "id": "BarackObama", "label": "BarackObama", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Obama", "label": "Obama", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Senate", "label": "Senate", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Garland", "label": "Garland", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Supreme Court", "label": "Supreme Court", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Chicago", "label": "Chicago", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "the Supreme Court", "label": "the Supreme Court", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "U.S.", "label": "U.S.", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Michelle", "label": "Michelle", "shape": "dot"}, {"color": "#ffffff", "font": {"color": "white"}, "id": "BernieSanders", "label": "BernieSanders", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Medicare", "label": "Medicare", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Bernie", "label": "Bernie", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Iowa", "label": "Iowa", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Bernie Sanders", "label": "Bernie Sanders", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "the United States", "label": "the United States", "shape": "dot"}, {"color": "#ffffff", "font": {"color": "white"}, "id": "realDonaldTrump", "label": "realDonaldTrump", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "China", "label": "China", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Mexico", "label": "Mexico", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "USA", "label": "USA", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Iran", "label": "Iran", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Israel", "label": "Israel", "shape": "dot"}, {"color": "#ffffff", "font": {"color": "white"}, "id": "ewarren", "label": "ewarren", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Warren", "label": "Warren", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Washington", "label": "Washington", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Mueller", "label": "Mueller", "shape": "dot"}, {"color": "#dd4b39", "font": {"color": "white"}, "id": "Amazon", "label": "Amazon", "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": "HillaryClinton", "to": "Hillary"}, {"from": "HillaryClinton", "to": "America"}, {"from": "HillaryClinton", "to": "Trump"}, {"from": "HillaryClinton", "to": "Donald Trump"}, {"from": "HillaryClinton", "to": "Congress"}, {"from": "HillaryClinton", "to": "Hillary Clinton"}, {"from": "HillaryClinton", "to": "Florida"}, {"from": "HillaryClinton", "to": "House"}, {"from": "HillaryClinton", "to": "Georgia"}, {"from": "BarackObama", "to": "Obama"}, {"from": "BarackObama", "to": "Senate"}, {"from": "BarackObama", "to": "Garland"}, {"from": "BarackObama", "to": "America"}, {"from": "BarackObama", "to": "Congress"}, {"from": "BarackObama", "to": "Supreme Court"}, {"from": "BarackObama", "to": "Chicago"}, {"from": "BarackObama", "to": "the Supreme Court"}, {"from": "BarackObama", "to": "U.S."}, {"from": "BarackObama", "to": "Michelle"}, {"from": "BernieSanders", "to": "America"}, {"from": "BernieSanders", "to": "Medicare"}, {"from": "BernieSanders", "to": "Trump"}, {"from": "BernieSanders", "to": "Donald Trump"}, {"from": "BernieSanders", "to": "Bernie"}, {"from": "BernieSanders", "to": "Iowa"}, {"from": "BernieSanders", "to": "Bernie Sanders"}, {"from": "BernieSanders", "to": "Congress"}, {"from": "BernieSanders", "to": "the United States"}, {"from": "realDonaldTrump", "to": "China"}, {"from": "realDonaldTrump", "to": "Trump"}, {"from": "realDonaldTrump", "to": "U.S."}, {"from": "realDonaldTrump", "to": "the United States"}, {"from": "realDonaldTrump", "to": "Mexico"}, {"from": "realDonaldTrump", "to": "America"}, {"from": "realDonaldTrump", "to": "Congress"}, {"from": "realDonaldTrump", "to": "USA"}, {"from": "realDonaldTrump", "to": "Iran"}, {"from": "realDonaldTrump", "to": "Israel"}, {"from": "ewarren", "to": "America"}, {"from": "ewarren", "to": "Trump"}, {"from": "ewarren", "to": "Congress"}, {"from": "ewarren", "to": "Donald Trump"}, {"from": "ewarren", "to": "Warren"}, {"from": "ewarren", "to": "Washington"}, {"from": "ewarren", "to": "Iowa"}, {"from": "ewarren", "to": "Mueller"}, {"from": "ewarren", "to": "Senate"}, {"from": "ewarren", "to": "Amazon"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
